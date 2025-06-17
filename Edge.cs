@@ -1,9 +1,8 @@
 using System.Numerics;
 using Raylib_cs;
 
-class Edge
+public class Edge
 {
-    public Color color;
+    public Color color = Color.Black;
     public Vector3 dir;
-
 }

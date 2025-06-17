@@ -3,15 +3,13 @@ using System.Collections;
 using System.Numerics;
 
 
-enum State
+public enum State
 {
     Rotation,
     Stable
 }
 
-
-
-class Button
+public class Button
 {
 
     Action callback;
@@ -56,9 +54,7 @@ class Button
 
 }
 
-
-
-class Program
+public class Program
 {
 
     public static string PrettyView(Matrix4x4 mat)
@@ -71,6 +67,8 @@ class Program
     }
     public unsafe static void Main(string[] args)
     {
+        Raylib.SetTraceLogLevel(TraceLogLevel.Fatal);
+
         var screen = new Vector2(1024, 768);
         Raylib.InitWindow((int)screen.X, (int)screen.Y, "Hello, world!");
         Raylib.SetTargetFPS(60);
@@ -89,6 +87,8 @@ class Program
                        () => {camera = defaultCamera;}),
         ];
 
+        var rubic = new CubicRubic(new CubicRubicConfig(2));
+
         var rotationAngle = new Vector2(5e-3f, 5e-3f);
 
         (float min, float max) cameraDistanseLimit = (10, 40);
@@ -98,7 +98,13 @@ class Program
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
             Raylib.BeginMode3D(camera);
-            Raylib.DrawCube(new Vector3(0, 0, 0), 10, 10, 10, Color.Black);
+
+            var ps = rubic.GetDrawable();
+            foreach (var (points, color) in ps)
+            {
+                Raylib.DrawTriangleStrip3D(points, 4, color);
+            }
+
             Raylib.EndMode3D();
             var mouseScroll = Raylib.GetMouseWheelMove();
             if (float.Abs(mouseScroll) > 0)
@@ -130,11 +136,11 @@ class Program
                 var cameraCopy = camera;
                 if (float.Abs(delta.X) > 0)
                 {
-                    Raylib.CameraYaw(&cameraCopy, rotationAngle.X * delta.X, true);
+                    Raylib.CameraYaw(&cameraCopy, -rotationAngle.X * delta.X, true);
                 }
                 if (float.Abs(delta.Y) > 0)
                 {
-                    Raylib.CameraPitch(&cameraCopy, rotationAngle.X * delta.Y, true, true, true);
+                    Raylib.CameraPitch(&cameraCopy, -rotationAngle.X * delta.Y, true, true, true);
                 }
                 camera = cameraCopy;
             }

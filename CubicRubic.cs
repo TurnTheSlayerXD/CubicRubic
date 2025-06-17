@@ -1,14 +1,12 @@
-
-using System.Drawing;
+using Raylib_cs;
+using System.Diagnostics;
 using System.Numerics;
-using System.Reflection.Metadata;
-
-class CubicRubicConfig
+public class CubicRubicConfig
 {
 
     public readonly float edgeLength;
     public readonly float rotationSpeed;
-    CubicRubicConfig(float edgeLength = 1, float rotationSpeed = 0.1f)
+    public CubicRubicConfig(float edgeLength = 1, float rotationSpeed = 0.1f)
     {
         this.edgeLength = edgeLength;
         this.rotationSpeed = rotationSpeed;
@@ -18,39 +16,39 @@ class CubicRubicConfig
 
 
 
-class CubicRubic
+public class CubicRubic
 {
-    Rotation currentRotation;
+    // Rotation currentRotation;
     public readonly Cubic[] cubics;
 
     public readonly CubicRubicConfig config;
 
     public Cubic[] LeftSide
     {
-        get => cubics.Where(c => c.pos.X == -1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.X, -config.edgeLength)).ToArray();
     }
     public Cubic[] RightSide
     {
-        get => cubics.Where(c => c.pos.X == 1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.X, config.edgeLength)).ToArray();
     }
     public Cubic[] UpperSide
     {
-        get => cubics.Where(c => c.pos.Y == 1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.Y, config.edgeLength)).ToArray();
     }
 
     public Cubic[] DownSide
     {
-        get => cubics.Where(c => c.pos.Y == -1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.Y, -config.edgeLength)).ToArray();
     }
 
     public Cubic[] FrontSide
     {
-        get => cubics.Where(c => c.pos.Z == 1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.Z, config.edgeLength)).ToArray();
     }
 
     public Cubic[] BackSide
     {
-        get => cubics.Where(c => c.pos.Z == -1).ToArray();
+        get => cubics.Where(c => FuncTool.AreClose(c.pos.Z, -config.edgeLength)).ToArray();
     }
 
 
@@ -73,6 +71,7 @@ class CubicRubic
                 }
             }
         }
+
         foreach (var cubic in LeftSide)
         {
             cubic.LeftSide.color = Color.Red;
@@ -91,27 +90,34 @@ class CubicRubic
         }
         foreach (var cubic in FrontSide)
         {
-            cubic.FrontSide.color = Color.White;
+            cubic.FrontSide.color = Color.Gray;
         }
         foreach (var cubic in BackSide)
         {
             cubic.BackSide.color = Color.Yellow;
         }
+
     }
-
-    public unsafe (Vector3*, Color)[] getDrawable()
+    public (Vector3[], Color)[] GetDrawable()
     {
-
+        var edges = new (Vector3[], Color)[27 * 6];
+        var count = 0;
         foreach (var cubic in cubics)
         {
             foreach (var edge in cubic.edges)
             {
-
-
+                var edgeCenter = cubic.pos + edge.dir * config.edgeLength / 2;
+                var v1 = edge.dir;
+                var (v2, v3) = FuncTool.GetTwoPerpendicular(v1, cubic.edges);
+                var halfEdge = config.edgeLength / 2;
+                edges[count++] = (FuncTool.GetTriangleStrip([ edgeCenter + v2 * halfEdge + v3 * halfEdge,
+                                    edgeCenter - v2 * halfEdge + v3 * halfEdge,
+                                    edgeCenter + v2 * halfEdge - v3 * halfEdge,
+                                    edgeCenter - v2 * halfEdge - v3 * halfEdge,], edge.dir), edge.color);
             }
         }
-
-
+        Debug.Assert(count == 27 * 6);
+        return edges;
     }
 
 
