@@ -96,7 +96,7 @@ public class Program
         while (!Raylib.WindowShouldClose())
         {
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.White);
+            Raylib.ClearBackground(Color.Gray);
             Raylib.BeginMode3D(camera);
 
             var ps = rubic.GetDrawable();
@@ -149,7 +149,5 @@ public class Program
         }
 
         Raylib.CloseWindow();
-
-
     }
 }

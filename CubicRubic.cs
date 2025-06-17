@@ -90,7 +90,7 @@ public class CubicRubic
         }
         foreach (var cubic in FrontSide)
         {
-            cubic.FrontSide.color = Color.Gray;
+            cubic.FrontSide.color = Color.RayWhite;
         }
         foreach (var cubic in BackSide)
         {
