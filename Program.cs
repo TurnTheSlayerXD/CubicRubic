@@ -8,20 +8,23 @@ public enum State
     Stable
 }
 
-
+public class CameraRef(Camera3D camera)
+{
+    public Camera3D obj = camera;
+}
 
 
 public class Program
 {
 
-    public unsafe static void DoLoop(CubicRubic rubic, CubicRubicConfig config, Camera3D camera, List<Button> buttons)
+    public unsafe static void DoLoop(CubicRubic rubic, CubicRubicConfig config, CameraRef camera, List<Button> buttons)
     {
         while (!Raylib.WindowShouldClose())
         {
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Gray);
 
-            Raylib.BeginMode3D(camera);
+            Raylib.BeginMode3D(camera.obj);
             var ps = rubic.GetDrawable();
             foreach (var (points, color) in ps)
             {
@@ -36,16 +39,17 @@ public class Program
             var mouseScroll = Raylib.GetMouseWheelMove();
             if (float.Abs(mouseScroll) > 0)
             {
-                var cameraCopy = camera;
+                var cameraCopy = camera.obj;
                 Raylib.CameraMoveToTarget(&cameraCopy, -mouseScroll);
                 var dist = Raymath.Vector3Distance(cameraCopy.Position, cameraCopy.Target);
                 if (config.cameraDistanseLimit.min < dist && dist < config.cameraDistanseLimit.max)
                 {
-                    camera = cameraCopy;
+                    camera.obj = cameraCopy;
                 }
             }
 
-            Raylib.DrawText("Clockwise actions", config.buttonsLeftColumnX, next);
+            Raylib.DrawText("Clockwise actions", (int)config.buttonsLeftColumnX, 10, Button.fontSize, Color.Black);
+            Raylib.DrawText("CounterClockwise actions", (int)config.buttonsRightColumnX, 10, Button.fontSize, Color.Black);
 
             foreach (var button in buttons)
             {
@@ -62,7 +66,7 @@ public class Program
             if (Raylib.IsMouseButtonDown(MouseButton.Left))
             {
                 var delta = Raylib.GetMouseDelta();
-                var cameraCopy = camera;
+                var cameraCopy = camera.obj;
                 if (float.Abs(delta.X) > 0)
                 {
                     Raylib.CameraYaw(&cameraCopy, -config.cameraRotationAngle.X * delta.X, true);
@@ -71,7 +75,7 @@ public class Program
                 {
                     Raylib.CameraPitch(&cameraCopy, -config.cameraRotationAngle.X * delta.Y, true, true, true);
                 }
-                camera = cameraCopy;
+                camera.obj = cameraCopy;
             }
             Raylib.EndDrawing();
 
@@ -103,23 +107,24 @@ public class Program
             FovY = 100,
             Projection = CameraProjection.Perspective
         };
-        var camera = defaultCamera;
-        var config = new CubicRubicConfig { edgeLength = 3, buttonsLeftColumnX = 300, buttonsRightColumnX = screen.X - 300 };
+        var camera = new CameraRef(defaultCamera);
+        var config = new CubicRubicConfig { edgeLength = 3, buttonsLeftColumnX = 100, buttonsRightColumnX = screen.X - 300 };
         var rubic = new CubicRubic(config);
 
-        float Y = -Button.defaultHeight;
+        float Y = -Button.defaultHeight + 20;
         float NextY()
         {
             Y += Button.defaultHeight + 30;
             return Y;
         }
 
-
         List<Button> buttons = new List<Button>();
         buttons.AddRange([
-            new Button(config.buttonsRightColumnX, NextY(),
+            new Button(screen.X / 2 - Button.defaultWidth / 2, 10,
                        "To default disposition",
-                       () => camera = defaultCamera),
+                       () => camera.obj = defaultCamera,
+                       false),
+
             new Button(config.buttonsRightColumnX, NextY(),
                        "Left Rotation",
                        () => rubic.addRotation(new LeftRotation { clockwise = false })),
@@ -140,7 +145,7 @@ public class Program
                        () => rubic.addRotation(new BackRotation{ clockwise = false })),
         ]);
 
-        Y = -Button.defaultHeight;
+        Y = -Button.defaultHeight + 20;
         buttons.AddRange([
             new Button(config.buttonsLeftColumnX, NextY(),
                        "Left Rotation",

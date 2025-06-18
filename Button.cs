@@ -4,7 +4,7 @@ using Raylib_cs;
 public class Button
 {
 
-    public const float defaultWidth = 100;
+    public const float defaultWidth = 200;
     public const float defaultHeight = 50;
 
     Action callback;
@@ -13,14 +13,16 @@ public class Button
     readonly Color highlightColor = Color.Pink;
     readonly Color defaultColor = Color.Black;
     readonly float lineWidth = 5;
-    readonly int fontSize = 15;
+    public static readonly int fontSize = 20;
 
-    public Button(float X, float Y, string text, Action callback)
+    bool hasOutline;
+    public Button(float X, float Y, string text, Action callback, bool hasOutline = true)
     {
         rect = rect with { X = X, Y = Y };
         this.callback = callback;
         this.text = text;
         this.callback = callback;
+        this.hasOutline = hasOutline;
     }
 
     public void Draw()
@@ -28,12 +30,18 @@ public class Button
         var mousePos = Raylib.GetMousePosition();
         if (Raylib.CheckCollisionPointRec(mousePos, rect))
         {
-            Raylib.DrawRectangleLinesEx(rect, lineWidth, highlightColor);
+            if (hasOutline)
+            {
+                Raylib.DrawRectangleLinesEx(rect, lineWidth, highlightColor);
+            }
             Raylib.DrawText(text, (int)rect.X + 10, (int)(rect.Y + rect.Height / 2), fontSize, highlightColor);
         }
         else
         {
-            Raylib.DrawRectangleLinesEx(rect, lineWidth, defaultColor);
+            if (hasOutline)
+            {
+                Raylib.DrawRectangleLinesEx(rect, lineWidth, defaultColor);
+            }
             Raylib.DrawText(text, (int)rect.X + 10, (int)(rect.Y + rect.Height / 2), fontSize, defaultColor);
         }
     }

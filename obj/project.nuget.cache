@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "gEQvqosNVUw=",
+  "dgSpecHash": "ZJ9/JHG4ypQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\cSharpTest.csproj",
+  "projectFilePath": "C:\\Users\\Professional\\Desktop\\CubicRubic\\cSharpTest.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\andrey.bazhura\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\9.0.6\\microsoft.dotnet.ilcompiler.9.0.6.nupkg.sha512",
-    "C:\\Users\\andrey.bazhura\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.6\\microsoft.net.illink.tasks.9.0.6.nupkg.sha512",
-    "C:\\Users\\andrey.bazhura\\.nuget\\packages\\raylib-cs\\7.0.1\\raylib-cs.7.0.1.nupkg.sha512",
-    "C:\\Users\\andrey.bazhura\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\9.0.6\\runtime.win-x64.microsoft.dotnet.ilcompiler.9.0.6.nupkg.sha512"
+    "C:\\Users\\Professional\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\8.0.6\\microsoft.dotnet.ilcompiler.8.0.6.nupkg.sha512",
+    "C:\\Users\\Professional\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.6\\microsoft.net.illink.tasks.8.0.6.nupkg.sha512",
+    "C:\\Users\\Professional\\.nuget\\packages\\raylib-cs\\7.0.1\\raylib-cs.7.0.1.nupkg.sha512",
+    "C:\\Users\\Professional\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\8.0.6\\runtime.win-x64.microsoft.dotnet.ilcompiler.8.0.6.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\cSharpTest.csproj": {}
+    "C:\\Users\\Professional\\Desktop\\CubicRubic\\cSharpTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\cSharpTest.csproj": {
+    "C:\\Users\\Professional\\Desktop\\CubicRubic\\cSharpTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\cSharpTest.csproj",
+        "projectUniqueName": "C:\\Users\\Professional\\Desktop\\CubicRubic\\cSharpTest.csproj",
         "projectName": "cSharpTest",
-        "projectPath": "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\cSharpTest.csproj",
-        "packagesPath": "C:\\Users\\andrey.bazhura\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\andrey.bazhura\\Desktop\\CubicRubic\\obj\\",
+        "projectPath": "C:\\Users\\Professional\\Desktop\\CubicRubic\\cSharpTest.csproj",
+        "packagesPath": "C:\\Users\\Professional\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Professional\\Desktop\\CubicRubic\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\andrey.bazhura\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Professional\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -37,23 +37,22 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.DotNet.ILCompiler": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.6, )",
+              "version": "[8.0.6, )",
               "autoReferenced": true
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.6, )",
+              "version": "[8.0.6, )",
               "autoReferenced": true
             },
             "Raylib-cs": {
@@ -75,7 +74,7 @@
           "downloadDependencies": [
             {
               "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
-              "version": "[9.0.6, 9.0.6]"
+              "version": "[8.0.6, 8.0.6]"
             }
           ],
           "frameworkReferences": {
@@ -83,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\Professional\\.dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
