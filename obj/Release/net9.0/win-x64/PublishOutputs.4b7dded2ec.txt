@@ -1,0 +1,2 @@
+C:\Users\andrey.bazhura\Desktop\CubicRubic\bin\Release\net9.0\win-x64\publish\cSharpTest.exe
+C:\Users\andrey.bazhura\Desktop\CubicRubic\bin\Release\net9.0\win-x64\publish\raylib.dll

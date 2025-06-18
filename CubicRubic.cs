@@ -4,20 +4,23 @@ using System.Numerics;
 public class CubicRubicConfig
 {
 
-    public readonly float edgeLength;
-    public readonly float rotationSpeed;
-    public CubicRubicConfig(float edgeLength = 1, float rotationSpeed = 0.1f)
-    {
-        this.edgeLength = edgeLength;
-        this.rotationSpeed = rotationSpeed;
-    }
+    public float edgeLength = 1;
+    public float rotationAngleSpeed = 5e-2f;
+    public float maxRotationAngle = float.Pi / 2;
+    public Color outlineColor = Color.Black;
+    public float outlineWidth = 0.05f;
+    public Vector2 cameraRotationAngle = new Vector2(5e-3f, 5e-3f);
+    public (float min, float max) cameraDistanseLimit = (10, 40);
+
+    public float buttonsLeftColumnX = 300;
+    public float buttonsRightColumnX = 800;
 
 }
 
-
-
 public class CubicRubic
 {
+
+    Rotation? currentRot;
     // Rotation currentRotation;
     public readonly Cubic[] cubics;
 
@@ -50,7 +53,6 @@ public class CubicRubic
     {
         get => cubics.Where(c => FuncTool.AreClose(c.pos.Z, -config.edgeLength)).ToArray();
     }
-
 
     public CubicRubic(CubicRubicConfig config)
     {
@@ -96,10 +98,47 @@ public class CubicRubic
         {
             cubic.BackSide.color = Color.Yellow;
         }
-
     }
+
+    private void ToAlignedPosition()
+    {
+        var edges = cubics.SelectMany(c => c.edges);
+        foreach (var edge in edges)
+        {
+            edge.dir.X = FuncTool.ClampToOneZeroMinusOne(edge.dir.X);
+            edge.dir.Y = FuncTool.ClampToOneZeroMinusOne(edge.dir.Y);
+            edge.dir.Z = FuncTool.ClampToOneZeroMinusOne(edge.dir.Z);
+        }
+        foreach (var cubic in cubics)
+        {
+            cubic.pos.X = config.edgeLength * FuncTool.ClampToOneZeroMinusOne(cubic.pos.X / config.edgeLength);
+            cubic.pos.Y = config.edgeLength * FuncTool.ClampToOneZeroMinusOne(cubic.pos.Y / config.edgeLength);
+            cubic.pos.Z = config.edgeLength * FuncTool.ClampToOneZeroMinusOne(cubic.pos.Z / config.edgeLength);
+        }
+    }
+
     public (Vector3[], Color)[] GetDrawable()
     {
+        if (currentRot != null)
+        {
+            var cubicsToRotate = currentRot.GetSideToRotate(this);
+            var axis = currentRot.GetRotationAxis();
+            foreach (var cubic in cubicsToRotate)
+            {
+                cubic.pos = Raymath.Vector3RotateByAxisAngle(cubic.pos, axis, config.rotationAngleSpeed);
+                foreach (var edge in cubic.edges)
+                {
+                    edge.dir = Raymath.Vector3RotateByAxisAngle(edge.dir, axis, config.rotationAngleSpeed);
+                }
+            }
+            currentRot.currentAngle += config.rotationAngleSpeed;
+            if (currentRot.currentAngle > config.maxRotationAngle || FuncTool.AreClose(currentRot.currentAngle, config.maxRotationAngle))
+            {
+                currentRot = null;
+                ToAlignedPosition();
+            }
+        }
+
         var edges = new (Vector3[], Color)[27 * 6];
         var count = 0;
         foreach (var cubic in cubics)
@@ -118,6 +157,12 @@ public class CubicRubic
         }
         Debug.Assert(count == 27 * 6);
         return edges;
+    }
+
+
+    public void addRotation(Rotation rot)
+    {
+        currentRot = rot;
     }
 
 

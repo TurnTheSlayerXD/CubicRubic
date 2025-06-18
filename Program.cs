@@ -1,5 +1,4 @@
 ﻿using Raylib_cs;
-using System.Collections;
 using System.Numerics;
 
 
@@ -9,53 +8,77 @@ public enum State
     Stable
 }
 
-public class Button
-{
 
-    Action callback;
-    Rectangle rect;
-    readonly string text;
-    readonly Color highlightColor = Color.Pink;
-    readonly Color defaultColor = Color.Black;
-    readonly float width = 10;
-    readonly int fontSize = 15;
 
-    public Button(Rectangle rect, string text, Action callback)
-    {
-        this.rect = rect;
-        this.callback = callback;
-        this.text = text;
-        this.callback = callback;
-    }
-
-    public void Draw()
-    {
-        var mousePos = Raylib.GetMousePosition();
-        if (Raylib.CheckCollisionPointRec(mousePos, rect))
-        {
-            Raylib.DrawRectangleLinesEx(rect, width, highlightColor);
-            Raylib.DrawText(text, (int)rect.X + 10, (int)(rect.Y + rect.Height / 2), fontSize, highlightColor);
-        }
-        else
-        {
-            Raylib.DrawRectangleLinesEx(rect, width, defaultColor);
-            Raylib.DrawText(text, (int)rect.X + 10, (int)(rect.Y + rect.Height / 2), fontSize, defaultColor);
-        }
-    }
-
-    public void ActIfMouseOnButton()
-    {
-        var mousePos = Raylib.GetMousePosition();
-        if (Raylib.CheckCollisionPointRec(mousePos, rect))
-        {
-            callback();
-        }
-    }
-
-}
 
 public class Program
 {
+
+    public unsafe static void DoLoop(CubicRubic rubic, CubicRubicConfig config, Camera3D camera, List<Button> buttons)
+    {
+        while (!Raylib.WindowShouldClose())
+        {
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.Gray);
+
+            Raylib.BeginMode3D(camera);
+            var ps = rubic.GetDrawable();
+            foreach (var (points, color) in ps)
+            {
+                Raylib.DrawTriangleStrip3D(points, 4, color);
+                Raylib.DrawCylinderEx(points[0], points[1], config.outlineWidth, config.outlineWidth, 0, config.outlineColor);
+                Raylib.DrawCylinderEx(points[1], points[3], config.outlineWidth, config.outlineWidth, 0, config.outlineColor);
+                Raylib.DrawCylinderEx(points[0], points[2], config.outlineWidth, config.outlineWidth, 0, config.outlineColor);
+                Raylib.DrawCylinderEx(points[2], points[3], config.outlineWidth, config.outlineWidth, 0, config.outlineColor);
+            }
+            Raylib.EndMode3D();
+
+            var mouseScroll = Raylib.GetMouseWheelMove();
+            if (float.Abs(mouseScroll) > 0)
+            {
+                var cameraCopy = camera;
+                Raylib.CameraMoveToTarget(&cameraCopy, -mouseScroll);
+                var dist = Raymath.Vector3Distance(cameraCopy.Position, cameraCopy.Target);
+                if (config.cameraDistanseLimit.min < dist && dist < config.cameraDistanseLimit.max)
+                {
+                    camera = cameraCopy;
+                }
+            }
+
+            Raylib.DrawText("Clockwise actions", config.buttonsLeftColumnX, next);
+
+            foreach (var button in buttons)
+            {
+                button.Draw();
+            }
+
+            if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+            {
+                foreach (var button in buttons)
+                {
+                    button.ActIfMouseOnButton();
+                }
+            }
+            if (Raylib.IsMouseButtonDown(MouseButton.Left))
+            {
+                var delta = Raylib.GetMouseDelta();
+                var cameraCopy = camera;
+                if (float.Abs(delta.X) > 0)
+                {
+                    Raylib.CameraYaw(&cameraCopy, -config.cameraRotationAngle.X * delta.X, true);
+                }
+                if (float.Abs(delta.Y) > 0)
+                {
+                    Raylib.CameraPitch(&cameraCopy, -config.cameraRotationAngle.X * delta.Y, true, true, true);
+                }
+                camera = cameraCopy;
+            }
+            Raylib.EndDrawing();
+
+        }
+
+        Raylib.CloseWindow();
+    }
 
     public static string PrettyView(Matrix4x4 mat)
     {
@@ -77,77 +100,67 @@ public class Program
             Position = new Vector3(0, 0, 20),
             Target = new Vector3(0, 0, 0),
             Up = new Vector3(0, 1, 0),
-            FovY = 100f,
+            FovY = 100,
             Projection = CameraProjection.Perspective
         };
         var camera = defaultCamera;
-        Button[] buttons = [
-            new Button(new Rectangle{X = screen.X - 300, Y = 0, Width = 200, Height = 100},
-                       "To default disposition",
-                       () => {camera = defaultCamera;}),
-        ];
+        var config = new CubicRubicConfig { edgeLength = 3, buttonsLeftColumnX = 300, buttonsRightColumnX = screen.X - 300 };
+        var rubic = new CubicRubic(config);
 
-        var rubic = new CubicRubic(new CubicRubicConfig(2));
-
-        var rotationAngle = new Vector2(5e-3f, 5e-3f);
-
-        (float min, float max) cameraDistanseLimit = (10, 40);
-
-        while (!Raylib.WindowShouldClose())
+        float Y = -Button.defaultHeight;
+        float NextY()
         {
-            Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.Gray);
-            Raylib.BeginMode3D(camera);
-
-            var ps = rubic.GetDrawable();
-            foreach (var (points, color) in ps)
-            {
-                Raylib.DrawTriangleStrip3D(points, 4, color);
-            }
-
-            Raylib.EndMode3D();
-            var mouseScroll = Raylib.GetMouseWheelMove();
-            if (float.Abs(mouseScroll) > 0)
-            {
-                var cameraCopy = camera;
-                Raylib.CameraMoveToTarget(&cameraCopy, -mouseScroll);
-                var dist = Raymath.Vector3Distance(cameraCopy.Position, cameraCopy.Target);
-                if (cameraDistanseLimit.min < dist && dist < cameraDistanseLimit.max)
-                {
-                    camera = cameraCopy;
-                }
-            }
-
-            foreach (var button in buttons)
-            {
-                button.Draw();
-            }
-
-            if (Raylib.IsMouseButtonPressed(MouseButton.Left))
-            {
-                foreach (var button in buttons)
-                {
-                    button.ActIfMouseOnButton();
-                }
-            }
-            if (Raylib.IsMouseButtonDown(MouseButton.Left))
-            {
-                var delta = Raylib.GetMouseDelta();
-                var cameraCopy = camera;
-                if (float.Abs(delta.X) > 0)
-                {
-                    Raylib.CameraYaw(&cameraCopy, -rotationAngle.X * delta.X, true);
-                }
-                if (float.Abs(delta.Y) > 0)
-                {
-                    Raylib.CameraPitch(&cameraCopy, -rotationAngle.X * delta.Y, true, true, true);
-                }
-                camera = cameraCopy;
-            }
-            Raylib.EndDrawing();
-
+            Y += Button.defaultHeight + 30;
+            return Y;
         }
 
-        Raylib.CloseWindow();
+
+        List<Button> buttons = new List<Button>();
+        buttons.AddRange([
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "To default disposition",
+                       () => camera = defaultCamera),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Left Rotation",
+                       () => rubic.addRotation(new LeftRotation { clockwise = false })),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Right Rotation",
+                       () => rubic.addRotation(new RightRotation{ clockwise = false })),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Upper Rotation",
+                       () => rubic.addRotation(new UpperRotation{ clockwise = false })),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Down Rotation",
+                       () => rubic.addRotation(new DownRotation{ clockwise = false })),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Front Rotation",
+                       () => rubic.addRotation(new FrontRotation{ clockwise = false })),
+            new Button(config.buttonsRightColumnX, NextY(),
+                       "Back Rotation",
+                       () => rubic.addRotation(new BackRotation{ clockwise = false })),
+        ]);
+
+        Y = -Button.defaultHeight;
+        buttons.AddRange([
+            new Button(config.buttonsLeftColumnX, NextY(),
+                       "Left Rotation",
+                        () => rubic.addRotation(new LeftRotation { clockwise = true })),
+            new Button(config.buttonsLeftColumnX, NextY(),
+                        "Right Rotation",
+                        () => rubic.addRotation(new RightRotation{ clockwise = true })),
+            new Button(config.buttonsLeftColumnX, NextY(),
+                        "Upper Rotation",
+                        () => rubic.addRotation(new UpperRotation{ clockwise = true })),
+            new Button(config.buttonsLeftColumnX, NextY(),
+                        "Down Rotation",
+                        () => rubic.addRotation(new DownRotation{ clockwise = true })),
+            new Button(config.buttonsLeftColumnX, NextY(),
+                        "Front Rotation",
+                        () => rubic.addRotation(new FrontRotation{ clockwise = true })),
+            new Button(config.buttonsLeftColumnX, NextY(),
+                        "Back Rotation",
+                        () => rubic.addRotation(new BackRotation{ clockwise = true })),]);
+
+        DoLoop(rubic, config, camera, buttons);
     }
 }

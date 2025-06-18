@@ -55,10 +55,22 @@ public static class FuncTool
                                      v1.X, v1.Y, v1.Z, 0,
                                      0, 0, 0, 1));
         var projected = points.Select(p => Vector4.Transform(p, planeMat)).ToArray();
-        Debug.Assert(projected.All(p => p.Z == projected[0].Z));
+        Debug.Assert(projected.All(p => AreClose(p.Z, projected[0].Z)));
         var res = SortPointsClockwise(projected.Select((e, i) => (e, i)).ToArray());
         Vector3[] toReturn = [points[res[0]], points[res[1]], points[res[3]], points[res[2]]];
         return toReturn;
+    }
+    public static float ClampToOneZeroMinusOne(float value)
+    {
+        if (Math.Abs(-1f - value) < Math.Abs(value - 0f))
+        {
+            return -1f;
+        }
+        else if (Math.Abs(1f - value) < Math.Abs(value - 0f))
+        {
+            return 1f;
+        }
+        return 0f;
     }
 }
 
