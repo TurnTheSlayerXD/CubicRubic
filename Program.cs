@@ -1,19 +1,10 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-
-public enum State
-{
-    Rotation,
-    Stable
-}
-
 public class CameraRef(Camera3D camera)
 {
     public Camera3D obj = camera;
 }
-
-
 public class Program
 {
 
@@ -127,44 +118,44 @@ public class Program
 
             new Button(config.buttonsRightColumnX, NextY(),
                        "Left Rotation",
-                       () => rubic.addRotation(new LeftRotation { clockwise = false })),
+                       () => rubic.AddRotation(new LeftRotation { clockwise = false })),
             new Button(config.buttonsRightColumnX, NextY(),
                        "Right Rotation",
-                       () => rubic.addRotation(new RightRotation{ clockwise = false })),
+                       () => rubic.AddRotation(new RightRotation{ clockwise = false })),
             new Button(config.buttonsRightColumnX, NextY(),
                        "Upper Rotation",
-                       () => rubic.addRotation(new UpperRotation{ clockwise = false })),
+                       () => rubic.AddRotation(new UpperRotation{ clockwise = false })),
             new Button(config.buttonsRightColumnX, NextY(),
                        "Down Rotation",
-                       () => rubic.addRotation(new DownRotation{ clockwise = false })),
+                       () => rubic.AddRotation(new DownRotation{ clockwise = false })),
             new Button(config.buttonsRightColumnX, NextY(),
                        "Front Rotation",
-                       () => rubic.addRotation(new FrontRotation{ clockwise = false })),
+                       () => rubic.AddRotation(new FrontRotation{ clockwise = false })),
             new Button(config.buttonsRightColumnX, NextY(),
                        "Back Rotation",
-                       () => rubic.addRotation(new BackRotation{ clockwise = false })),
+                       () => rubic.AddRotation(new BackRotation{ clockwise = false })),
         ]);
 
         Y = -Button.defaultHeight + 20;
         buttons.AddRange([
             new Button(config.buttonsLeftColumnX, NextY(),
                        "Left Rotation",
-                        () => rubic.addRotation(new LeftRotation { clockwise = true })),
+                        () => rubic.AddRotation(new LeftRotation { clockwise = true })),
             new Button(config.buttonsLeftColumnX, NextY(),
                         "Right Rotation",
-                        () => rubic.addRotation(new RightRotation{ clockwise = true })),
+                        () => rubic.AddRotation(new RightRotation{ clockwise = true })),
             new Button(config.buttonsLeftColumnX, NextY(),
                         "Upper Rotation",
-                        () => rubic.addRotation(new UpperRotation{ clockwise = true })),
+                        () => rubic.AddRotation(new UpperRotation{ clockwise = true })),
             new Button(config.buttonsLeftColumnX, NextY(),
                         "Down Rotation",
-                        () => rubic.addRotation(new DownRotation{ clockwise = true })),
+                        () => rubic.AddRotation(new DownRotation{ clockwise = true })),
             new Button(config.buttonsLeftColumnX, NextY(),
                         "Front Rotation",
-                        () => rubic.addRotation(new FrontRotation{ clockwise = true })),
+                        () => rubic.AddRotation(new FrontRotation{ clockwise = true })),
             new Button(config.buttonsLeftColumnX, NextY(),
                         "Back Rotation",
-                        () => rubic.addRotation(new BackRotation{ clockwise = true })),]);
+                        () => rubic.AddRotation(new BackRotation{ clockwise = true })),]);
 
         DoLoop(rubic, config, camera, buttons);
     }

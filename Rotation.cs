@@ -31,7 +31,7 @@ public class RightRotation : Rotation
     }
     public override Vector3 GetRotationAxis()
     {
-        return clockwise ? new Vector3(1, 0, 0) : new Vector3(-1, 0, 0);
+        return clockwise ? new Vector3(-1, 0, 0) : new Vector3(1, 0, 0);
     }
 }
 public class UpperRotation : Rotation
@@ -44,7 +44,7 @@ public class UpperRotation : Rotation
     }
     public override Vector3 GetRotationAxis()
     {
-        return clockwise ? new Vector3(0, 1, 0) : new Vector3(0, -1, 0);
+        return clockwise ? new Vector3(0, -1, 0) : new Vector3(0, 1, 0);
     }
 }
 public class DownRotation : Rotation
@@ -56,7 +56,7 @@ public class DownRotation : Rotation
     }
     public override Vector3 GetRotationAxis()
     {
-        return clockwise ? new Vector3(0, -1, 0) : new Vector3(0, 1, 0);
+        return clockwise ? new Vector3(0, 1, 0) : new Vector3(0, -1, 0);
     }
 }
 public class FrontRotation : Rotation
@@ -68,7 +68,7 @@ public class FrontRotation : Rotation
     }
     public override Vector3 GetRotationAxis()
     {
-        return clockwise ? new Vector3(0, 0, 1) : new Vector3(0, 0, -1);
+        return clockwise ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1);
     }
 }
 public class BackRotation : Rotation
@@ -79,6 +79,6 @@ public class BackRotation : Rotation
     }
     public override Vector3 GetRotationAxis()
     {
-        return clockwise ? new Vector3(0, 0, -1) : new Vector3(0, 0, -1);
+        return clockwise ? new Vector3(0, 0, 1) : new Vector3(0, 0, -1);
     }
 }

@@ -1,26 +1,11 @@
 using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
-public class CubicRubicConfig
-{
 
-    public float edgeLength = 1;
-    public float rotationAngleSpeed = 5e-2f;
-    public float maxRotationAngle = float.Pi / 2;
-    public Color outlineColor = Color.Black;
-    public float outlineWidth = 0.05f;
-    public Vector2 cameraRotationAngle = new Vector2(5e-3f, 5e-3f);
-    public (float min, float max) cameraDistanseLimit = (10, 40);
-
-    public float buttonsLeftColumnX = 300;
-    public float buttonsRightColumnX = 800;
-
-}
 
 public class CubicRubic
 {
-
-    Rotation? currentRot;
+    Queue<Rotation> rotationStack;
     // Rotation currentRotation;
     public readonly Cubic[] cubics;
 
@@ -56,8 +41,8 @@ public class CubicRubic
 
     public CubicRubic(CubicRubicConfig config)
     {
+        rotationStack = new Queue<Rotation>();
         this.config = config;
-
         cubics = new Cubic[27];
         int count = 0;
         for (int i = -1; i <= 1; ++i)
@@ -119,10 +104,11 @@ public class CubicRubic
 
     public (Vector3[], Color)[] GetDrawable()
     {
-        if (currentRot != null)
+        if (rotationStack.Count > 0)
         {
-            var cubicsToRotate = currentRot.GetSideToRotate(this);
-            var axis = currentRot.GetRotationAxis();
+            var curRotation = rotationStack.Peek();
+            var cubicsToRotate = curRotation.GetSideToRotate(this);
+            var axis = curRotation.GetRotationAxis();
             foreach (var cubic in cubicsToRotate)
             {
                 cubic.pos = Raymath.Vector3RotateByAxisAngle(cubic.pos, axis, config.rotationAngleSpeed);
@@ -131,10 +117,10 @@ public class CubicRubic
                     edge.dir = Raymath.Vector3RotateByAxisAngle(edge.dir, axis, config.rotationAngleSpeed);
                 }
             }
-            currentRot.currentAngle += config.rotationAngleSpeed;
-            if (currentRot.currentAngle > config.maxRotationAngle || FuncTool.AreClose(currentRot.currentAngle, config.maxRotationAngle))
+            curRotation.currentAngle += config.rotationAngleSpeed;
+            if (curRotation.currentAngle > config.maxRotationAngle || FuncTool.AreClose(curRotation.currentAngle, config.maxRotationAngle))
             {
-                currentRot = null;
+                rotationStack.Dequeue();
                 ToAlignedPosition();
             }
         }
@@ -158,11 +144,9 @@ public class CubicRubic
         Debug.Assert(count == 27 * 6);
         return edges;
     }
-
-
-    public void addRotation(Rotation rot)
+    public void AddRotation(Rotation rot)
     {
-        currentRot = rot;
+        rotationStack.Enqueue(rot);
     }
 
 

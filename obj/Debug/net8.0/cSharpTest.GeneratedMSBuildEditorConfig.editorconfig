@@ -12,6 +12,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = cSharpTest
-build_property.ProjectDir = C:\Users\Professional\Desktop\CubicRubic\
+build_property.ProjectDir = c:\Users\Professional\Desktop\CubicRubic\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = false
