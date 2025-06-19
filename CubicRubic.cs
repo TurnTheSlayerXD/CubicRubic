@@ -135,10 +135,10 @@ public class CubicRubic
                 var v1 = edge.dir;
                 var (v2, v3) = FuncTool.GetTwoPerpendicular(v1, cubic.edges);
                 var halfEdge = config.edgeLength / 2;
-                edges[count++] = (FuncTool.GetTriangleStrip([ edgeCenter + v2 * halfEdge + v3 * halfEdge,
-                                    edgeCenter - v2 * halfEdge + v3 * halfEdge,
-                                    edgeCenter + v2 * halfEdge - v3 * halfEdge,
-                                    edgeCenter - v2 * halfEdge - v3 * halfEdge,], edge.dir), edge.color);
+                edges[count++] = (FuncTool.GetTriangleStrip([edgeCenter + v2 * halfEdge + v3 * halfEdge,
+                                                             edgeCenter - v2 * halfEdge + v3 * halfEdge,
+                                                             edgeCenter + v2 * halfEdge - v3 * halfEdge,
+                                                             edgeCenter - v2 * halfEdge - v3 * halfEdge], edge.dir), edge.color);
             }
         }
         Debug.Assert(count == 27 * 6);
