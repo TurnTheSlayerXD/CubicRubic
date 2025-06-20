@@ -1,6 +1,4 @@
-
 using Raylib_cs;
-
 public class Button
 {
 
